@@ -1,16 +1,10 @@
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import type { RegisterForm } from "../types/RegisterForm";
 
-type RegisterForm = {
-  name: string;
-  email: string;
-  handle: string;
-  password: string;
-  password_confirmation: string;
-};
-
-const registerFormValues = {
+const registerFormValues: RegisterForm = {
   name: "",
   email: "",
   handle: "",
@@ -24,10 +18,20 @@ export default function RegisterPage() {
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({ defaultValues: registerFormValues });
+  } = useForm({ defaultValues: registerFormValues });
 
-  function handleRegister() {
-    console.log("From handleRegister");
+  const password = watch("password");
+
+  async function handleRegister(formData: RegisterForm) {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/auth/register",
+        formData,
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -60,7 +64,13 @@ export default function RegisterPage() {
             type="email"
             placeholder="Registration Email"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-            {...register("email", { required: "Please fill the email field" })}
+            {...register("email", {
+              required: "Please fill the email field",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "E-mail no válido",
+              },
+            })}
           />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
         </div>
@@ -77,7 +87,9 @@ export default function RegisterPage() {
               required: "Please fill the handle field",
             })}
           />
-          {errors.handle && <ErrorMessage>{errors.handle.message}</ErrorMessage>}
+          {errors.handle && (
+            <ErrorMessage>{errors.handle.message}</ErrorMessage>
+          )}
         </div>
         <div className="grid grid-cols-1 space-y-3">
           <label htmlFor="password" className="text-2xl text-slate-500">
@@ -90,9 +102,15 @@ export default function RegisterPage() {
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password", {
               required: "Please fill the password field",
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters length",
+              },
             })}
           />
-          {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
+          {errors.password && (
+            <ErrorMessage>{errors.password.message}</ErrorMessage>
+          )}
         </div>
 
         <div className="grid grid-cols-1 space-y-3">
@@ -100,18 +118,22 @@ export default function RegisterPage() {
             htmlFor="password_confirmation"
             className="text-2xl text-slate-500"
           >
-            Repetir Password
+            Repeat Password
           </label>
           <input
             id="password"
             type="password"
-            placeholder="Repetir Password"
+            placeholder="Repeat Password"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password_confirmation", {
               required: "Please confirm your password",
+              validate: (value) =>
+                value === password || "Passwords don't coincide",
             })}
           />
-          {errors.password_confirmation && <ErrorMessage>{errors.password_confirmation.message}</ErrorMessage>}
+          {errors.password_confirmation && (
+            <ErrorMessage>{errors.password_confirmation.message}</ErrorMessage>
+          )}
         </div>
 
         <input
