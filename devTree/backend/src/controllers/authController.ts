@@ -51,5 +51,12 @@ export const login = async (req: Request, res: Response) => {
 
   const token = generateJWT({ id: user._id });
 
-  res.send(token);
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 180 * 24 * 60 * 60 * 1000, // 180 days in ms
+  });
+
+  res.send("Login successful");
 };
