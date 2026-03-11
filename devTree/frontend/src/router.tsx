@@ -2,7 +2,7 @@ import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import LinkTreePage from "./pages/LinkTreePage";
 import LoginPage from "./pages/LoginPage";
-import ProfileViewPage from "./pages/ProfileViewPage";
+import ProfileViewPage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
