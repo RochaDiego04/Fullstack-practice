@@ -4,6 +4,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import type { User } from "../types/User";
 import type { ProfileForm } from "../types/ProfileForm";
 import { updateProfile } from "../api/DevTreeAPI";
+import { toast } from "sonner";
 
 export default function ProfileView() {
   const queryClient = useQueryClient();
@@ -19,8 +20,14 @@ export default function ProfileView() {
 
   const updateProfileMutation = useMutation({
     mutationFn: updateProfile,
-    onError: () => {},
-    onSuccess: () => {},
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      // data returned from backend, then from updateProfile frontend function
+      toast.success(data);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
   });
 
   const handleUserProfileForm = (formData: ProfileForm) => {
