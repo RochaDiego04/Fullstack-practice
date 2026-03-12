@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import User from "../models/User";
 import slug from "slug";
 import { hashPassword, verifyPassword } from "../utils/auth";
+import { generateJWT } from "../utils/jwt";
 
 export const createAccount = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -27,7 +28,7 @@ export const createAccount = async (req: Request, res: Response) => {
 
   await user.save();
 
-  res.status(201).send("");
+  res.status(201).send("User created succesfully");
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -48,5 +49,14 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).json({ error: error.message });
   }
 
-  res.send("Authenticated...");
+  const token = generateJWT({ id: user._id });
+
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 180 * 24 * 60 * 60 * 1000, // 180 days in ms
+  });
+
+  res.send("Login successful");
 };
