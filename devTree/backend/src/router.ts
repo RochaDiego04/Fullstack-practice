@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { handleInputErrors } from "./middleware/validation";
 import { authenticate } from "./middleware/auth";
 import { createAccount, login } from "./controllers/authController";
-import { getUser } from "./controllers/userController";
+import { getUser, updateProfile } from "./controllers/userController";
 
 const router = Router();
 
@@ -28,6 +28,15 @@ router.post(
   login,
 );
 
-router.get("/user", authenticate, getUser);
+router
+  .get("/user", authenticate, getUser)
+  .patch(
+    "/user",
+    authenticate,
+    body("handle").notEmpty().withMessage("Handle cannot be empty"),
+    body("description").notEmpty().withMessage("Description cannot be empty"),
+    handleInputErrors,
+    updateProfile,
+  );
 
 export default router;
