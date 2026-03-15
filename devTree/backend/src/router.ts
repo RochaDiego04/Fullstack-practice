@@ -3,7 +3,11 @@ import { body } from "express-validator";
 import { handleInputErrors } from "./middleware/validation";
 import { authenticate } from "./middleware/auth";
 import { createAccount, login } from "./controllers/authController";
-import { getUser, updateProfile } from "./controllers/userController";
+import {
+  getUser,
+  updateProfile,
+  uploadImage,
+} from "./controllers/userController";
 
 const router = Router();
 
@@ -37,6 +41,7 @@ router
     body("description").notEmpty().withMessage("Description cannot be empty"),
     handleInputErrors,
     updateProfile,
-  );
+  )
+  .post("/user/image", authenticate, uploadImage);
 
 export default router;
