@@ -11,7 +11,7 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const { description } = req.body;
+    const { description, links } = req.body;
 
     // unique handle
     const handle = slug(req.body.handle, "");
@@ -24,6 +24,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     req.user.description = description;
     req.user.handle = handle;
+    req.user.links = links;
     await req.user.save();
     res.send("Profile updated successfully");
   } catch (e) {

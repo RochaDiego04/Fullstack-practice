@@ -8,6 +8,7 @@ export function isValidUrl(url: string) {
     new URL(url);
     return true;
   } catch (error) {
+    console.error(error);
     return false;
   }
 }
