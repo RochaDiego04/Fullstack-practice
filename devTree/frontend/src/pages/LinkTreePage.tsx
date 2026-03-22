@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { social } from "../data/social";
 import DevTreeInput from "../components/DevTreeInput";
 import { isValidUrl } from "../utils";
@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "../api/DevTreeAPI";
 import type { User } from "../types/User";
+import type { DevTreeLink } from "../types/DevTreeLinks";
 
 export default function LinkTreePage() {
   const [devTreeLinks, setDevTreeLinks] = useState(social);
@@ -23,11 +24,34 @@ export default function LinkTreePage() {
     },
   });
 
+  useEffect(() => {
+    const updatedData = devTreeLinks.map((item) => {
+      const userLink = JSON.parse(user.links).find(
+        (link: DevTreeLink) => link.name === item.name,
+      );
+      if (userLink) {
+        return { ...item, url: userLink.url, enabled: userLink.enabled };
+      }
+      return item;
+    });
+
+    setDevTreeLinks(updatedData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedLinks = devTreeLinks.map((link) =>
       link.name === e.target.name ? { ...link, url: e.target.value } : link,
     );
     setDevTreeLinks(updatedLinks);
+
+    // update user tanstack cache
+    queryClient.setQueryData(["user"], (prevUser: User) => {
+      return {
+        ...prevUser,
+        links: JSON.stringify(updatedLinks),
+      };
+    });
   };
 
   const handleToggleChange = (itemName: string) => {
