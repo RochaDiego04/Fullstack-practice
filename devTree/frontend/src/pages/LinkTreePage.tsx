@@ -6,7 +6,19 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "../api/DevTreeAPI";
 import type { User } from "../types/User";
-import type { DevTreeLink } from "../types/DevTreeLinks";
+import type { DevTreeLink, SocialNetwork } from "../types/DevTreeLinks";
+
+/**
+ * Derives the payload to store in user.links:
+ * - Includes all networks where the URL is non-empty (enabled or not)
+ * - Assigns sequential 1-based ids based on position in devTreeLinks order
+ * - This makes ids stable and ready for drag-and-drop reordering
+ */
+function buildLinksPayload(links: DevTreeLink[]): SocialNetwork[] {
+  return links
+    .filter((link) => link.url.trim() !== "")
+    .map((link, index) => ({ ...link, id: index + 1 }));
+}
 
 export default function LinkTreePage() {
   const [devTreeLinks, setDevTreeLinks] = useState(social);
@@ -27,7 +39,7 @@ export default function LinkTreePage() {
   useEffect(() => {
     const updatedData = devTreeLinks.map((item) => {
       const userLink = JSON.parse(user.links).find(
-        (link: DevTreeLink) => link.name === item.name,
+        (link: SocialNetwork) => link.name === item.name,
       );
       if (userLink) {
         return { ...item, url: userLink.url, enabled: userLink.enabled };
@@ -45,37 +57,30 @@ export default function LinkTreePage() {
     );
     setDevTreeLinks(updatedLinks);
 
-    // update user tanstack cache
-    queryClient.setQueryData(["user"], (prevUser: User) => {
-      return {
-        ...prevUser,
-        links: JSON.stringify(updatedLinks),
-      };
-    });
+    queryClient.setQueryData(["user"], (prevUser: User) => ({
+      ...prevUser,
+      links: JSON.stringify(buildLinksPayload(updatedLinks)),
+    }));
   };
 
   const handleToggleChange = (itemName: string) => {
     const updatedLinks = devTreeLinks.map((link) => {
       if (link.name === itemName) {
-        if (isValidUrl(link.url)) {
-          return { ...link, enabled: !link.enabled };
-        } else {
+        if (!link.enabled && !isValidUrl(link.url)) {
           toast.error("URL is not valid");
+          return link;
         }
+        return { ...link, enabled: !link.enabled };
       }
       return link;
     });
 
-    // update user state
     setDevTreeLinks(updatedLinks);
 
-    // update user tanstack cache
-    queryClient.setQueryData(["user"], (prevUser: User) => {
-      return {
-        ...prevUser,
-        links: JSON.stringify(updatedLinks),
-      };
-    });
+    queryClient.setQueryData(["user"], (prevUser: User) => ({
+      ...prevUser,
+      links: JSON.stringify(buildLinksPayload(updatedLinks)),
+    }));
   };
 
   return (
