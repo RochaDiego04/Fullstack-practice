@@ -1,20 +1,56 @@
 import { Link, Outlet } from "react-router-dom";
 import NavigationTabs from "./NavigationTabs";
 import { Toaster } from "sonner";
+import { DndContext, type DragEndEvent, closestCenter } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import type { User } from "../types/User";
 import { useMemo } from "react";
 import type { SocialNetwork } from "../types/DevTreeLinks";
 import DevTreeLink from "./DevTreeLink";
+import { useQueryClient } from "@tanstack/react-query";
 
 type DevTreeProps = {
   data: User;
 };
 
 export default function DevTree({ data }: DevTreeProps) {
-  const enabledLinks = useMemo(
-    () => JSON.parse(data.links).filter((item: SocialNetwork) => item.enabled),
+  const queryClient = useQueryClient();
+
+  const allLinks: SocialNetwork[] = useMemo(
+    () => JSON.parse(data.links),
     [data],
   );
+
+  const enabledLinks = useMemo(
+    () => allLinks.filter((item) => item.enabled),
+    [allLinks],
+  );
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const prevIndex = enabledLinks.findIndex((link) => link.id === active.id);
+    const newIndex = enabledLinks.findIndex((link) => link.id === over.id);
+
+    const reorderedEnabled = arrayMove(enabledLinks, prevIndex, newIndex);
+
+    // Rebuild the full links array: reordered enabled links first, then disabled
+    const disabledLinks = allLinks.filter((item) => !item.enabled);
+    const updatedLinks = [...reorderedEnabled, ...disabledLinks];
+
+    queryClient.setQueryData(["user"], (prevUser: User) => ({
+      ...prevUser,
+      links: JSON.stringify(updatedLinks),
+    }));
+  };
 
   return (
     <>
@@ -65,11 +101,21 @@ export default function DevTree({ data }: DevTreeProps) {
                 {data.description}
               </p>
 
-              <div className="mt-20 flex flex-col gap-5">
-                {enabledLinks.map((link: SocialNetwork) => (
-                  <DevTreeLink key={link.name} link={link} />
-                ))}
-              </div>
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <div className="mt-20 flex flex-col gap-5">
+                  <SortableContext
+                    items={enabledLinks}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {enabledLinks.map((link: SocialNetwork) => (
+                      <DevTreeLink key={link.name} link={link} />
+                    ))}
+                  </SortableContext>
+                </div>
+              </DndContext>
             </div>
           </div>
         </main>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { social } from "../data/social";
 import DevTreeInput from "../components/DevTreeInput";
 import { isValidUrl } from "../utils";
@@ -6,25 +6,20 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "../api/DevTreeAPI";
 import type { User } from "../types/User";
-import type { DevTreeLink, SocialNetwork } from "../types/DevTreeLinks";
-
-/**
- * Derives the payload to store in user.links:
- * - Includes all networks where the URL is non-empty (enabled or not)
- * - Assigns sequential 1-based ids based on position in devTreeLinks order
- * - This makes ids stable and ready for drag-and-drop reordering
- */
-function buildLinksPayload(links: DevTreeLink[]): SocialNetwork[] {
-  return links
-    .filter((link) => link.url.trim() !== "")
-    .map((link, index) => ({ ...link, id: index + 1 }));
-}
+import type { SocialNetwork } from "../types/DevTreeLinks";
+import { buildStoredLinks } from "../utils/linkHelpers";
 
 export default function LinkTreePage() {
-  const [devTreeLinks, setDevTreeLinks] = useState(social);
-
   const queryClient = useQueryClient();
   const user: User = queryClient.getQueryData(["user"])!;
+
+  const [devTreeLinks, setDevTreeLinks] = useState(() => {
+    const savedLinks: SocialNetwork[] = JSON.parse(user.links);
+    return social.map((item) => {
+      const saved = savedLinks.find((l) => l.name === item.name);
+      return saved ? { ...item, url: saved.url, enabled: saved.enabled } : item;
+    });
+  });
 
   const { mutate } = useMutation({
     mutationFn: updateProfile,
@@ -36,30 +31,18 @@ export default function LinkTreePage() {
     },
   });
 
-  useEffect(() => {
-    const updatedData = devTreeLinks.map((item) => {
-      const userLink = JSON.parse(user.links).find(
-        (link: SocialNetwork) => link.name === item.name,
-      );
-      if (userLink) {
-        return { ...item, url: userLink.url, enabled: userLink.enabled };
-      }
-      return item;
-    });
-
-    setDevTreeLinks(updatedData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedLinks = devTreeLinks.map((link) =>
       link.name === e.target.name ? { ...link, url: e.target.value } : link,
     );
     setDevTreeLinks(updatedLinks);
 
+    const currentStored: SocialNetwork[] = JSON.parse(
+      queryClient.getQueryData<User>(["user"])!.links,
+    );
     queryClient.setQueryData(["user"], (prevUser: User) => ({
       ...prevUser,
-      links: JSON.stringify(buildLinksPayload(updatedLinks)),
+      links: JSON.stringify(buildStoredLinks(updatedLinks, currentStored)),
     }));
   };
 
@@ -77,9 +60,12 @@ export default function LinkTreePage() {
 
     setDevTreeLinks(updatedLinks);
 
+    const currentStored: SocialNetwork[] = JSON.parse(
+      queryClient.getQueryData<User>(["user"])!.links,
+    );
     queryClient.setQueryData(["user"], (prevUser: User) => ({
       ...prevUser,
-      links: JSON.stringify(buildLinksPayload(updatedLinks)),
+      links: JSON.stringify(buildStoredLinks(updatedLinks, currentStored)),
     }));
   };
 
@@ -95,7 +81,7 @@ export default function LinkTreePage() {
       ))}
       <button
         className="bg-cyan-400 p-2 text-lg w-full uppercase text-slate-600 rounded font-bold"
-        onClick={() => mutate(user)}
+        onClick={() => mutate(queryClient.getQueryData<User>(["user"])!)}
       >
         Save Changes
       </button>
