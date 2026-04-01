@@ -35,8 +35,10 @@ export default function LinkTreePage() {
     const updatedLinks = devTreeLinks.map((link) =>
       link.name === e.target.name ? { ...link, url: e.target.value } : link,
     );
+    // updating local
     setDevTreeLinks(updatedLinks);
 
+    // updating tanstack cache
     const currentStored: SocialNetwork[] = JSON.parse(
       queryClient.getQueryData<User>(["user"])!.links,
     );
@@ -58,8 +60,10 @@ export default function LinkTreePage() {
       return link;
     });
 
+    // updating local
     setDevTreeLinks(updatedLinks);
 
+    // updating tanstack cache
     const currentStored: SocialNetwork[] = JSON.parse(
       queryClient.getQueryData<User>(["user"])!.links,
     );

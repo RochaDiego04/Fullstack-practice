@@ -11,34 +11,40 @@ Two parallel representations of the user's social links exist:
 
 ```ts
 type DevTreeLink = { name: string; url: string; enabled: boolean };
-type SocialNetwork = { id: number; name: string; url: string; enabled: boolean };
+type SocialNetwork = { id: string; name: string; url: string; enabled: boolean };
 ```
 
-## Why store links with a URL even if disabled?
+`id` is always equal to `name` (e.g. `"facebook"`), making it stable for drag-and-drop regardless of array position.
 
-When drag-and-drop is added, the user will reorder their links. We need to persist the order for all configured links — not just the enabled ones — so the position is remembered even when a link is temporarily hidden.
+## Array order = display order
 
-## buildLinksPayload
+The position of each link in the stored `user.links` array is the canonical display order. Enabled links come first, disabled links after. This order is what the sidebar preview and drag-and-drop operate on.
 
-Every time `devTreeLinks` changes (URL typed or toggle flipped), both the local state and the cache are updated using this helper:
+## buildStoredLinks
+
+Located in `utils/linkHelpers.ts`. Every time links change (URL typed, toggle flipped, or drag-and-drop reorder), the stored array is rebuilt through this helper:
 
 ```ts
-function buildLinksPayload(links: DevTreeLink[]): SocialNetwork[] {
-  return links
-    .filter((link) => link.url.trim() !== "")
-    .map((link, index) => ({ ...link, id: index + 1 }));
-}
+function buildStoredLinks(
+  editorState: DevTreeLink[],
+  currentStored: SocialNetwork[],
+): SocialNetwork[]
 ```
 
 - Filters out empty URLs
-- Assigns sequential 1-based `id`s based on the current order in `devTreeLinks`
-- Result is JSON-stringified into `user.links`
+- Classifies links as **newly enabled**, **existing enabled**, or **disabled**
+- Newly enabled links go to **first position** among enabled links
+- Existing enabled links preserve their current stored order (respects drag-and-drop)
+- Disabled links go after all enabled links
+- Each item gets `id: link.name`
+
+Both `LinkTreePage` handlers and `DevTree`'s drag handler use this function (or direct array manipulation for drag) to keep the cache in sync.
 
 ## Toggle rules
 
-- **Enable**: only allowed if the URL passes `isValidUrl()`. Shows a toast error otherwise.
+- **Enable**: only allowed if the URL passes `isValidUrl()`. Shows a toast error otherwise. Newly enabled links appear first in the sidebar.
 - **Disable**: always allowed, regardless of URL validity.
 
 ## Save flow
 
-`mutate(user)` reads `user` from the TanStack Query cache at click time. Because both `handleUrlChange` and `handleToggleChange` keep the cache in sync via `queryClient.setQueryData`, the saved data always reflects the current state of the inputs.
+The "Save Changes" button reads the current `user` from the TanStack Query cache at click time via `queryClient.getQueryData`. Because `handleUrlChange`, `handleToggleChange`, and drag-and-drop all keep the cache in sync via `queryClient.setQueryData`, the saved data always reflects the latest state including order changes.
