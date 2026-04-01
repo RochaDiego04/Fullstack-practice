@@ -5,6 +5,7 @@ import { authenticate } from "./middleware/auth";
 import { createAccount, login } from "./controllers/authController";
 import {
   getUser,
+  getUserByHandle,
   updateProfile,
   uploadImage,
 } from "./controllers/userController";
@@ -43,5 +44,7 @@ router
     updateProfile,
   )
   .post("/user/image", authenticate, uploadImage);
+
+router.get("/:handle", getUserByHandle);
 
 export default router;
