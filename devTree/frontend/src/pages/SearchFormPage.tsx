@@ -37,14 +37,14 @@ export default function SearchFormPage() {
           className="border-none bg-transparent p-2 focus:ring-0 flex-1"
           placeholder="elonmusk, zuck, jeffbezos"
           {...register("handle", {
-            required: "Un Nombre de Usuario es obligatorio",
+            required: "A username is required",
           })}
         />
       </div>
       {errors.handle && <ErrorMessage>{errors.handle.message}</ErrorMessage>}
 
       <div className="mt-10">
-        {mutation.isPending && <p className="text-center">Cargando...</p>}
+        {mutation.isPending && <p className="text-center">Loading...</p>}
         {mutation.error && (
           <p className="text-center text-red-600 font-black">
             {mutation.error.message}
@@ -65,7 +65,7 @@ export default function SearchFormPage() {
       <input
         type="submit"
         className="bg-cyan-400 p-3 text-lg w-full uppercase text-slate-600 rounded-lg font-bold cursor-pointer"
-        value="Obtener mi DevTree"
+        value="Get My DevTree"
       />
     </form>
   );

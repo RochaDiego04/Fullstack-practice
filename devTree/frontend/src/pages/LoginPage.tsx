@@ -49,13 +49,13 @@ export default function LoginPage() {
           <input
             id="email"
             type="email"
-            placeholder="Email de Registro"
+            placeholder="Your Email"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("email", {
-              required: "El Email es obligatorio",
+              required: "Email is required",
               pattern: {
                 value: /\S+@\S+\.\S+/,
-                message: "E-mail no válido",
+                message: "Invalid email",
               },
             })}
           />
@@ -68,10 +68,10 @@ export default function LoginPage() {
           <input
             id="password"
             type="password"
-            placeholder="Password de Registro"
+            placeholder="Your Password"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password", {
-              required: "El Password es obligatorio",
+              required: "Password is required",
             })}
           />
           {errors.password && (
@@ -82,7 +82,7 @@ export default function LoginPage() {
         <input
           type="submit"
           className="bg-cyan-400 p-3 text-lg w-full uppercase text-slate-600 rounded-lg font-bold cursor-pointer"
-          value="Iniciar Sesión"
+          value="Log In"
         />
       </form>
       <nav className="mt-10">

@@ -76,7 +76,7 @@ export default function RegisterPage() {
               required: "Please fill the email field",
               pattern: {
                 value: /\S+@\S+\.\S+/,
-                message: "E-mail no válido",
+                message: "Invalid email",
               },
             })}
           />
@@ -89,7 +89,7 @@ export default function RegisterPage() {
           <input
             id="handle"
             type="text"
-            placeholder="Nombre de usuario: sin espacios"
+            placeholder="Username: no spaces"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("handle", {
               required: "Please fill the handle field",
@@ -106,7 +106,7 @@ export default function RegisterPage() {
           <input
             id="password"
             type="password"
-            placeholder="Password de Registro"
+            placeholder="Your Password"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password", {
               required: "Please fill the password field",
@@ -147,7 +147,7 @@ export default function RegisterPage() {
         <input
           type="submit"
           className="bg-cyan-400 p-3 text-lg w-full uppercase text-slate-600 rounded-lg font-bold cursor-pointer"
-          value="Crear Cuenta"
+          value="Create Account"
         />
       </form>
 

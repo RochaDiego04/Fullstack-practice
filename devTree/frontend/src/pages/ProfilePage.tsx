@@ -66,14 +66,14 @@ export default function ProfileView() {
       onSubmit={handleSubmit(handleUserProfileForm)}
     >
       <legend className="text-2xl text-slate-800 text-center">
-        Editar Información
+        Edit Profile
       </legend>
       <div className="grid grid-cols-1 gap-2">
         <label htmlFor="handle">Handle:</label>
         <input
           type="text"
           className="border-none bg-slate-100 rounded-lg p-2"
-          placeholder="handle o Nombre de Usuario"
+          placeholder="Handle or Username"
           {...register("handle", {
             required: "Username can't be empty",
           })}
@@ -82,10 +82,10 @@ export default function ProfileView() {
       </div>
 
       <div className="grid grid-cols-1 gap-2">
-        <label htmlFor="description">Descripción:</label>
+        <label htmlFor="description">Description:</label>
         <textarea
           className="border-none bg-slate-100 rounded-lg p-2"
-          placeholder="Tu Descripción"
+          placeholder="Your Description"
           {...register("description")}
         />
         {errors.description && (
@@ -94,7 +94,7 @@ export default function ProfileView() {
       </div>
 
       <div className="grid grid-cols-1 gap-2">
-        <label htmlFor="handle">Imagen:</label>
+        <label htmlFor="handle">Image:</label>
         <input
           id="image"
           type="file"
@@ -108,7 +108,7 @@ export default function ProfileView() {
       <input
         type="submit"
         className="bg-cyan-400 p-2 text-lg w-full uppercase text-slate-600 rounded-lg font-bold cursor-pointer"
-        value="Guardar Cambios"
+        value="Save Changes"
       />
     </form>
   );

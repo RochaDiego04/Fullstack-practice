@@ -12,7 +12,7 @@ export default function HandlePage() {
     queryKey: ["handle", handle],
   });
 
-  if (isLoading) return <p className="text-center text-white">Cargando...</p>;
+  if (isLoading) return <p className="text-center text-white">Loading...</p>;
   if (error) return <Navigate to={"/404"}></Navigate>;
   if (data) return <HandleData data={data} />;
 }
