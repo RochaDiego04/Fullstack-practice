@@ -49,6 +49,17 @@ export async function getUserByHandle(handle: string) {
   }
 }
 
+export async function logout() {
+  try {
+    const { data } = await api.post<string>("/auth/logout");
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error) {
+      throw new Error(error.response?.data.error);
+    }
+  }
+}
+
 export async function searchByHandle(handle: string) {
   try {
     const { data } = await api.post<string>(`/search`, { handle });

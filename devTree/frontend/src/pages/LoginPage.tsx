@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../components/ErrorMessage";
 import type { LoginForm } from "../types/LoginForm";
@@ -12,6 +12,7 @@ const loginFormValues: LoginForm = {
 };
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -23,6 +24,7 @@ export default function LoginPage() {
     try {
       const { data } = await api.post("/auth/login", formData);
       toast.success(data);
+      navigate("/admin");
       reset();
     } catch (error) {
       if (isAxiosError(error) && error) {

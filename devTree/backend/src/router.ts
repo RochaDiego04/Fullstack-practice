@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body } from "express-validator";
 import { handleInputErrors } from "./middleware/validation";
 import { authenticate } from "./middleware/auth";
-import { createAccount, login } from "./controllers/authController";
+import { createAccount, login, logout } from "./controllers/authController";
 import {
   getUser,
   getUserByHandle,
@@ -33,6 +33,8 @@ router.post(
   handleInputErrors,
   login,
 );
+
+router.post("/auth/logout", logout);
 
 router
   .get("/user", authenticate, getUser)

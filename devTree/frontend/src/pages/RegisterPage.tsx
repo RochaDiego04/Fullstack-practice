@@ -2,17 +2,18 @@ import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
 import { useForm } from "react-hook-form";
 import { isAxiosError } from "axios";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { RegisterForm } from "../types/RegisterForm";
 import { toast } from "sonner";
 
 export default function RegisterPage() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const registerFormValues: RegisterForm = {
     name: "",
     email: "",
-    handle: location.state.handle || "",
+    handle: location?.state?.handle || "",
     password: "",
     password_confirmation: "",
   };
@@ -31,6 +32,7 @@ export default function RegisterPage() {
     try {
       const { data } = await api.post("/auth/register", formData);
       toast.success(data);
+      navigate("/auth/login");
       reset();
     } catch (error) {
       if (isAxiosError(error) && error) {
