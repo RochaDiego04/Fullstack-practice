@@ -3,4 +3,6 @@ export type User = {
   name: string;
   email: string;
   description: string;
+  image: string;
+  links: string;
 };

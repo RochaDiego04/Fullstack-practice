@@ -2,8 +2,14 @@ import { Router } from "express";
 import { body } from "express-validator";
 import { handleInputErrors } from "./middleware/validation";
 import { authenticate } from "./middleware/auth";
-import { createAccount, login } from "./controllers/authController";
-import { getUser, updateProfile } from "./controllers/userController";
+import { createAccount, login, logout } from "./controllers/authController";
+import {
+  getUser,
+  getUserByHandle,
+  searchByHandle,
+  updateProfile,
+  uploadImage,
+} from "./controllers/userController";
 
 const router = Router();
 
@@ -28,15 +34,25 @@ router.post(
   login,
 );
 
+router.post("/auth/logout", logout);
+
 router
   .get("/user", authenticate, getUser)
   .patch(
     "/user",
     authenticate,
     body("handle").notEmpty().withMessage("Handle cannot be empty"),
-    body("description").notEmpty().withMessage("Description cannot be empty"),
     handleInputErrors,
     updateProfile,
-  );
+  )
+  .post("/user/image", authenticate, uploadImage);
+
+router.get("/:handle", getUserByHandle);
+router.post(
+  "/search",
+  body("handle").notEmpty().withMessage("Handle cannot be empty"),
+  handleInputErrors,
+  searchByHandle,
+);
 
 export default router;

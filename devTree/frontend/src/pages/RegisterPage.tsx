@@ -2,19 +2,22 @@ import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
 import { useForm } from "react-hook-form";
 import { isAxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { RegisterForm } from "../types/RegisterForm";
 import { toast } from "sonner";
 
-const registerFormValues: RegisterForm = {
-  name: "",
-  email: "",
-  handle: "",
-  password: "",
-  password_confirmation: "",
-};
-
 export default function RegisterPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const registerFormValues: RegisterForm = {
+    name: "",
+    email: "",
+    handle: location?.state?.handle || "",
+    password: "",
+    password_confirmation: "",
+  };
+
   const {
     register,
     watch,
@@ -29,6 +32,7 @@ export default function RegisterPage() {
     try {
       const { data } = await api.post("/auth/register", formData);
       toast.success(data);
+      navigate("/auth/login");
       reset();
     } catch (error) {
       if (isAxiosError(error) && error) {
@@ -72,7 +76,7 @@ export default function RegisterPage() {
               required: "Please fill the email field",
               pattern: {
                 value: /\S+@\S+\.\S+/,
-                message: "E-mail no válido",
+                message: "Invalid email",
               },
             })}
           />
@@ -85,7 +89,7 @@ export default function RegisterPage() {
           <input
             id="handle"
             type="text"
-            placeholder="Nombre de usuario: sin espacios"
+            placeholder="Username: no spaces"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("handle", {
               required: "Please fill the handle field",
@@ -102,7 +106,7 @@ export default function RegisterPage() {
           <input
             id="password"
             type="password"
-            placeholder="Password de Registro"
+            placeholder="Your Password"
             className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
             {...register("password", {
               required: "Please fill the password field",
@@ -143,7 +147,7 @@ export default function RegisterPage() {
         <input
           type="submit"
           className="bg-cyan-400 p-3 text-lg w-full uppercase text-slate-600 rounded-lg font-bold cursor-pointer"
-          value="Crear Cuenta"
+          value="Create Account"
         />
       </form>
 

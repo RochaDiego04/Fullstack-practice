@@ -60,3 +60,12 @@ export const login = async (req: Request, res: Response) => {
 
   res.send("Login successful");
 };
+
+export const logout = (_req: Request, res: Response) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  res.send("Logout successful");
+};
