@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import SearchFormPage from "./SearchFormPage";
 export default function HomePage() {
   return (
     <>
@@ -15,6 +16,8 @@ export default function HomePage() {
               media, share your TikTok, Facebook, Instagram, YouTube, Github and
               more
             </p>
+
+            <SearchFormPage />
           </div>
         </div>
       </main>

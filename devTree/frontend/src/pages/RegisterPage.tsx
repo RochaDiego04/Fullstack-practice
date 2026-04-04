@@ -2,19 +2,21 @@ import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
 import { useForm } from "react-hook-form";
 import { isAxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import type { RegisterForm } from "../types/RegisterForm";
 import { toast } from "sonner";
 
-const registerFormValues: RegisterForm = {
-  name: "",
-  email: "",
-  handle: "",
-  password: "",
-  password_confirmation: "",
-};
-
 export default function RegisterPage() {
+  const location = useLocation();
+
+  const registerFormValues: RegisterForm = {
+    name: "",
+    email: "",
+    handle: location.state.handle || "",
+    password: "",
+    password_confirmation: "",
+  };
+
   const {
     register,
     watch,

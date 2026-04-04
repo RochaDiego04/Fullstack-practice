@@ -6,6 +6,7 @@ import { createAccount, login } from "./controllers/authController";
 import {
   getUser,
   getUserByHandle,
+  searchByHandle,
   updateProfile,
   uploadImage,
 } from "./controllers/userController";
@@ -39,12 +40,17 @@ router
     "/user",
     authenticate,
     body("handle").notEmpty().withMessage("Handle cannot be empty"),
-    body("description").notEmpty().withMessage("Description cannot be empty"),
     handleInputErrors,
     updateProfile,
   )
   .post("/user/image", authenticate, uploadImage);
 
 router.get("/:handle", getUserByHandle);
+router.post(
+  "/search",
+  body("handle").notEmpty().withMessage("Handle cannot be empty"),
+  handleInputErrors,
+  searchByHandle,
+);
 
 export default router;
