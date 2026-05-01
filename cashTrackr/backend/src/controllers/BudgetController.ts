@@ -9,7 +9,7 @@ export class BudgetController {
         // TODO: Filter by authenticatd user
       });
 
-      res.json(budgets);
+      res.json({ body: budgets });
     } catch (error) {
       res.status(500).json({ error: "There was an error" });
     }
@@ -26,25 +26,17 @@ export class BudgetController {
   };
 
   static getById = async (req: Request, res: Response) => {
-    try {
-      const { id } = req.params;
-      const budget = await Budget.findByPk(+id);
-
-      if (!budget) {
-        const error = new Error("Budget not found");
-        return res.status(404).json({ error: error.message });
-      }
-      res.json(budget);
-    } catch (error) {
-      res.status(500).json({ error: "There was an error" });
-    }
+    res.json({ body: req.budget });
   };
 
   static updateById = async (req: Request, res: Response) => {
-    console.log("");
+    const { id: _id, ...updateData } = req.body;
+    await req.budget.update(updateData);
+    res.json({ message: "Budget updated successfully", body: req.budget });
   };
 
   static deleteById = async (req: Request, res: Response) => {
-    console.log("");
+    await req.budget.destroy();
+    res.json({ message: "Budget deleted successfully", body: req.budget });
   };
 }

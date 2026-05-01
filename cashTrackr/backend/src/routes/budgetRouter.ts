@@ -2,6 +2,8 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { BudgetController } from "../controllers/BudgetController";
 import { handleInputErrors } from "../middleware/validation";
+import { validateId } from "../middleware/id";
+import { validateBudgetExists } from "../middleware/budget";
 
 const router = Router();
 
@@ -23,15 +25,36 @@ router.post(
 
 router.get(
   "/:id",
-  param("id")
-    .isInt()
-    .withMessage("Invalid ID")
-    .custom((value) => value > 0)
-    .withMessage("Invalid negative ID"),
+  validateId,
   handleInputErrors,
+  validateBudgetExists,
   BudgetController.getById,
 );
-router.patch("/:id", BudgetController.updateById);
-router.delete("/:id", BudgetController.deleteById);
+
+router.patch(
+  "/:id",
+  validateId,
+  body("name")
+    .optional()
+    .notEmpty()
+    .withMessage("The budget's name cannot be empty"),
+  body("amount")
+    .optional()
+    .isNumeric()
+    .withMessage("Not valid quantity")
+    .custom((value) => value > 0)
+    .withMessage("Amount must be greater than 0"),
+  handleInputErrors,
+  validateBudgetExists,
+  BudgetController.updateById,
+);
+
+router.delete(
+  "/:id",
+  validateId,
+  handleInputErrors,
+  validateBudgetExists,
+  BudgetController.deleteById,
+);
 
 export default router;
