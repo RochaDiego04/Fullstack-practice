@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import Budget from "../models/Budget";
+import Expense from "../models/Expense";
 
 export class BudgetController {
   static getAll = async (req: Request, res: Response) => {
@@ -26,12 +27,17 @@ export class BudgetController {
   };
 
   static getById = async (req: Request, res: Response) => {
-    res.json({ body: req.budget });
+    // Instead of using the budget middleware (req.budget)
+    // We will get the budget again but with Expenses
+    const budget = await Budget.findByPk(req.budget.id, {
+      include: [Expense],
+    });
+    res.json({ body: budget });
   };
 
   static updateById = async (req: Request, res: Response) => {
-    const { id: _id, ...updateData } = req.body;
-    await req.budget.update(updateData);
+    const { name, amount } = req.body;
+    await req.budget.update({ name, amount });
     res.json({ message: "Budget updated successfully", body: req.budget });
   };
 

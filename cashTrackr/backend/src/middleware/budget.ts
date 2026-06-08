@@ -20,11 +20,6 @@ export const validateBudgetId = async (
   if (isNaN(id) || id <= 0) {
     return res.status(400).json({ error: "Invalid budget ID" });
   }
-  const budget = await Budget.findByPk(id);
-  if (!budget) {
-    return res.status(404).json({ error: "Budget not found" });
-  }
-  req.budget = budget;
   next();
 };
 
@@ -34,8 +29,8 @@ export const validateBudgetExists = async (
   next: NextFunction,
 ) => {
   try {
-    const { id } = req.params;
-    const budget = await Budget.findByPk(+id);
+    const { budgetId } = req.params;
+    const budget = await Budget.findByPk(+budgetId);
 
     if (!budget) {
       const error = new Error("Budget not found");
@@ -46,6 +41,7 @@ export const validateBudgetExists = async (
     next();
   } catch (error) {
     res.status(500).json({ error: "There was an error" });
+    console.log("were here");
   }
 };
 
