@@ -1,15 +1,27 @@
-import { Table, Column, DataType, HasMany, Model } from "sequelize-typescript";
+import {
+  Table,
+  Column,
+  DataType,
+  HasMany,
+  Model,
+  AllowNull,
+  BelongsTo,
+  ForeignKey,
+} from "sequelize-typescript";
 import Expense from "./Expense";
+import User from "./User";
 
 @Table({
   tableName: "budgets",
 })
 class Budget extends Model {
+  @AllowNull(false)
   @Column({
     type: DataType.STRING(100),
   })
   declare name: string;
 
+  @AllowNull(false)
   @Column({
     type: DataType.DECIMAL,
   })
@@ -22,6 +34,11 @@ class Budget extends Model {
   declare expenses: Expense[];
   // If removed Budget, remove all the expenses related to it.
   // RESTRICT if you need to remove all expenses related to the budget first.
+
+  @ForeignKey(() => User)
+  declare userId: number;
+  @BelongsTo(() => User)
+  declare user: User;
 }
 
 export default Budget;
