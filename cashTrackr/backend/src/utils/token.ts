@@ -1,2 +1,3 @@
-export const generateToken = () =>
-  Math.floor(100000 + Math.random() * 9000).toString();
+import crypto from "crypto";
+
+export const generateToken = () => crypto.randomInt(100000, 1000000).toString();

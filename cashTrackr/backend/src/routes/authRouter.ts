@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/AuthController";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { handleInputErrors } from "../middleware/validation";
 import { limiter } from "../config/limiter";
 
@@ -27,6 +27,44 @@ router.post(
     .withMessage("Invalid token"),
   handleInputErrors,
   AuthController.confirmAccount,
+);
+
+router.post(
+  "/login",
+  body("email").isEmail().withMessage("Invalid e-mail"),
+  body("password").notEmpty().withMessage("password is mandatory"),
+  handleInputErrors,
+  AuthController.login,
+);
+
+router.post(
+  "/forgot-password",
+  body("email").isEmail().withMessage("Invalid e-mail"),
+  handleInputErrors,
+  AuthController.forgotPassword,
+);
+
+router.post(
+  "/validate-token",
+  body("token")
+    .notEmpty()
+    .isLength({ min: 6, max: 6 })
+    .withMessage("Invalid token"),
+  handleInputErrors,
+  AuthController.validateToken,
+);
+
+router.post(
+  "/reset-password/:token",
+  param("token")
+    .notEmpty()
+    .isLength({ min: 6, max: 6 })
+    .withMessage("Invalid token"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be greater than 8 characters"),
+  handleInputErrors,
+  AuthController.resetPasswordWithToken,
 );
 
 export default router;
