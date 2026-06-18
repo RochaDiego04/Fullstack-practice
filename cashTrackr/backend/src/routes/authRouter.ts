@@ -70,4 +70,25 @@ router.post(
 
 router.get("/user", authenticate, AuthController.getUser);
 
+router.post(
+  "/update-password",
+  authenticate,
+  body("current_password")
+    .notEmpty()
+    .withMessage("Actual password cannot be empty"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("New password must be greater than 8 characters"),
+  handleInputErrors,
+  AuthController.updateCurrUserPassword,
+);
+
+router.post(
+  "/check-password/:token",
+  authenticate,
+  body("password").notEmpty().withMessage("Password cannot be empty"),
+  handleInputErrors,
+  AuthController.checkPassword,
+);
+
 export default router;

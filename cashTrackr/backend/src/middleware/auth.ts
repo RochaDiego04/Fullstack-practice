@@ -47,6 +47,4 @@ export const authenticate = async (
   } catch (error) {
     res.status(500).json({ error: "Invalid Token" });
   }
-
-  res.json({ token });
 };
