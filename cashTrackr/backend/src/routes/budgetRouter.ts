@@ -5,6 +5,7 @@ import {
   validateBudgetExists,
   validateBudgetInput,
   validateBudgetId,
+  hasAccess,
 } from "../middleware/budget";
 import { ExpensesController } from "../controllers/ExpenseController";
 import { validateExpenseExists } from "../middleware/expenses";
@@ -12,11 +13,15 @@ import {
   validateExpenseId,
   validateExpenseInput,
 } from "../middleware/expenses";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
+router.use(authenticate);
+
 router.param("budgetId", validateBudgetId);
 router.param("expenseId", validateExpenseId);
+router.param("budgetId", hasAccess);
 
 router.get("/", BudgetController.getAll);
 

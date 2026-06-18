@@ -65,3 +65,15 @@ export const validateBudgetInput = async (
 
   next();
 };
+
+export const hasAccess = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.budget.userId !== req.user.id) {
+    const error = new Error("Invalid action");
+    return res.status(401).json({ error: error.message });
+  }
+  next();
+};
