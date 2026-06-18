@@ -134,4 +134,8 @@ export class AuthController {
 
     res.json("Password modified");
   };
+
+  static getUser = async (req: Request, res: Response) => {
+    res.json(req.user);
+  };
 }
