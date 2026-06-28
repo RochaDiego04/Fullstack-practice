@@ -33,15 +33,13 @@ export const validateBudgetExists = async (
     const budget = await Budget.findByPk(+budgetId);
 
     if (!budget) {
-      const error = new Error("Budget not found");
-      return res.status(404).json({ error: error.message });
+      return res.status(404).json({ error: "Presupuesto no encontrado" });
     }
     req.budget = budget;
 
     next();
   } catch (error) {
-    res.status(500).json({ error: "There was an error" });
-    console.log("were here");
+    res.status(500).json({ error: "Hubo un error" });
   }
 };
 
@@ -72,8 +70,7 @@ export const hasAccess = async (
   next: NextFunction,
 ) => {
   if (req.budget.userId !== req.user.id) {
-    const error = new Error("Invalid action");
-    return res.status(401).json({ error: error.message });
+    return res.status(401).json({ error: "Acción no válida" });
   }
   next();
 };

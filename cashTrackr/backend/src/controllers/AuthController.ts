@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import User from "../models/User";
-import { compareHashedPassword, hashPassword } from "../utils/auth";
+import { checkPassword, hashPassword } from "../utils/auth";
 import { generateToken } from "../utils/token";
 import { AuthEmail } from "../emails/AuthEmail";
 import { generateJWT } from "../utils/jwt";
@@ -12,13 +12,12 @@ export class AuthController {
     const userExists = await User.findOne({ where: { email } });
 
     if (userExists) {
-      const error = new Error("The email is already in use");
-      res.status(409).json({ error: error.message });
+      res.status(409).json({ error: "Un usuario con ese email ya esta registrado" });
       return;
     }
 
     try {
-      const user = new User(req.body);
+      const user = await User.create(req.body);
       user.password = await hashPassword(password);
       user.token = generateToken();
 
@@ -30,9 +29,9 @@ export class AuthController {
         token: user.token,
       });
 
-      res.json("Account created successfully");
+      res.status(201).json("Cuenta creada exitosamente");
     } catch (error) {
-      res.status(500).json({ error: "Error creating account" });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 
@@ -58,23 +57,15 @@ export class AuthController {
     const user = await User.findOne({ where: { email: email } });
 
     if (!user) {
-      const error = new Error("User not found");
-      return res.status(404).json({ error: error.message });
+      return res.status(404).json({ error: "Usuario no encontrado" });
     }
     if (!user.confirmed) {
-      const error = new Error(
-        "You must verify your account first, please check your email",
-      );
-      return res.status(403).json({ error: error.message });
+      return res.status(403).json({ error: "La Cuenta no ha sido confirmada" });
     }
 
-    const isCorrectPassword = await compareHashedPassword(
-      password,
-      user.password,
-    );
+    const isCorrectPassword = await checkPassword(password, user.password);
     if (!isCorrectPassword) {
-      const error = new Error("Incorrect password");
-      return res.status(401).json({ error: error.message });
+      return res.status(401).json({ error: "Password Incorrecto" });
     }
 
     const token = generateJWT(user.id);
@@ -144,7 +135,7 @@ export class AuthController {
     const { id } = req.user;
 
     const user = await User.findByPk(id);
-    const isPasswordCorrect = await compareHashedPassword(
+    const isPasswordCorrect = await checkPassword(
       current_password,
       user.password,
     );
@@ -165,7 +156,7 @@ export class AuthController {
     const { id } = req.user;
 
     const user = await User.findByPk(id);
-    const isPasswordCorrect = await compareHashedPassword(
+    const isPasswordCorrect = await checkPassword(
       password,
       user.password,
     );
