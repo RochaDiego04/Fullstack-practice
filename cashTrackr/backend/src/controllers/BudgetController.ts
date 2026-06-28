@@ -12,41 +12,38 @@ export class BudgetController {
         },
       });
 
-      res.json({ body: budgets });
+      res.json(budgets);
     } catch (error) {
-      res.status(500).json({ error: "There was an error" });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 
   static create = async (req: Request, res: Response) => {
     try {
-      const budget = new Budget(req.body);
+      const budget = await Budget.create(req.body);
       budget.userId = req.user.id;
       await budget.save();
-      res.status(200).json("Budget created successfully");
+      res.status(201).json("Presupuesto Creado Correctamente");
     } catch (error) {
-      res.status(500).json({ error: "There was an error" });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 
   static getById = async (req: Request, res: Response) => {
-    // Instead of using the budget middleware (req.budget)
-    // We will get the budget again but with Expenses
     const budget = await Budget.findByPk(req.budget.id, {
       include: [Expense],
     });
 
-    res.json({ body: budget });
+    res.json(budget);
   };
 
   static updateById = async (req: Request, res: Response) => {
-    const { name, amount } = req.body;
-    await req.budget.update({ name, amount });
-    res.json({ message: "Budget updated successfully", body: req.budget });
+    await req.budget.update(req.body);
+    res.json("Presupuesto actualizado correctamente");
   };
 
   static deleteById = async (req: Request, res: Response) => {
     await req.budget.destroy();
-    res.json({ message: "Budget deleted successfully", body: req.budget });
+    res.json("Presupuesto eliminado");
   };
 }
