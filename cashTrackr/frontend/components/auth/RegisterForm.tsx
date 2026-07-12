@@ -1,10 +1,13 @@
 "use client";
 
 import { register } from "@/actions/create-account-action";
+import { useActionState } from "react";
 
 export default function RegisterForm() {
+  const [state, dispatch] = useActionState(register, { errors: [] });
+
   return (
-    <form className="mt-14 space-y-5" noValidate action={register}>
+    <form className="mt-14 space-y-5" noValidate action={dispatch}>
       <div className="flex flex-col gap-2">
         <label className="font-bold text-2xl" htmlFor="email">
           Email
