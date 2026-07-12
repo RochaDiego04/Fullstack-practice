@@ -12,7 +12,9 @@ export class AuthController {
     const userExists = await User.findOne({ where: { email } });
 
     if (userExists) {
-      res.status(409).json({ error: "Un usuario con ese email ya esta registrado" });
+      res
+        .status(409)
+        .json({ errors: ["Un usuario con ese email ya esta registrado"] });
       return;
     }
 
@@ -29,9 +31,9 @@ export class AuthController {
         token: user.token,
       });
 
-      res.status(201).json("Cuenta creada exitosamente");
+      res.status(201).json({ message: "Cuenta creada exitosamente" });
     } catch (error) {
-      res.status(500).json({ error: "Hubo un error" });
+      res.status(500).json({ errors: ["Hubo un error"] });
     }
   };
 
@@ -156,10 +158,7 @@ export class AuthController {
     const { id } = req.user;
 
     const user = await User.findByPk(id);
-    const isPasswordCorrect = await checkPassword(
-      password,
-      user.password,
-    );
+    const isPasswordCorrect = await checkPassword(password, user.password);
 
     if (!isPasswordCorrect) {
       const error = new Error("Actual password is incorrect");

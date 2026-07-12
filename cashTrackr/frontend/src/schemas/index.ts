@@ -15,3 +15,11 @@ export const RegisterSchema = z
     message: "Passwords do not match",
     path: ["password_confirmation"],
   });
+
+export const SuccessSchema = z.object({
+  message: z.string({ message: "Invalid incoming string message" }),
+});
+
+export const ErrorSchema = z.object({
+  errors: z.array(z.string()),
+});
