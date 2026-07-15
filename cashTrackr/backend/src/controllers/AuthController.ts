@@ -14,7 +14,7 @@ export class AuthController {
     if (userExists) {
       res
         .status(409)
-        .json({ errors: ["Un usuario con ese email ya esta registrado"] });
+        .json({ error: "Un usuario con ese email ya esta registrado" });
       return;
     }
 
@@ -33,7 +33,7 @@ export class AuthController {
 
       res.status(201).json({ message: "Cuenta creada exitosamente" });
     } catch (error) {
-      res.status(500).json({ errors: ["Hubo un error"] });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 
@@ -42,7 +42,7 @@ export class AuthController {
 
     const user = await User.findOne({ where: { token: token } });
     if (!user) {
-      return res.status(401).json({ errors: ["Invalid token"] });
+      return res.status(401).json({ error: "Invalid token" });
     }
 
     user.confirmed = true;
@@ -58,17 +58,15 @@ export class AuthController {
     const user = await User.findOne({ where: { email: email } });
 
     if (!user) {
-      return res.status(404).json({ errors: ["Usuario no encontrado"] });
+      return res.status(404).json({ error: "Usuario no encontrado" });
     }
     if (!user.confirmed) {
-      return res
-        .status(403)
-        .json({ errors: ["La Cuenta no ha sido confirmada"] });
+      return res.status(403).json({ error: "La Cuenta no ha sido confirmada" });
     }
 
     const isCorrectPassword = await checkPassword(password, user.password);
     if (!isCorrectPassword) {
-      return res.status(401).json({ errors: ["Password Incorrecto"] });
+      return res.status(401).json({ error: "Password Incorrecto" });
     }
 
     const token = generateJWT(user.id);
@@ -81,7 +79,7 @@ export class AuthController {
 
     if (!user) {
       const error = new Error("User not found");
-      return res.status(404).json({ errors: [error.message] });
+      return res.status(404).json({ error: error.message });
     }
 
     try {
@@ -96,9 +94,7 @@ export class AuthController {
 
       res.json("Check your email for more instructions");
     } catch (error) {
-      res
-        .status(500)
-        .json({ errors: ["Error sending password reset email"] });
+      res.status(500).json({ error: "Error sending password reset email" });
     }
   };
 
@@ -109,7 +105,7 @@ export class AuthController {
     const tokenExists = await User.findOne({ where: { token: token } });
     if (!tokenExists) {
       const error = new Error("Invalid token");
-      return res.status(404).json({ errors: [error.message] });
+      return res.status(404).json({ error: error.message });
     }
     res.json("");
   };
@@ -121,7 +117,7 @@ export class AuthController {
     const user = await User.findOne({ where: { token: token } });
     if (!user) {
       const error = new Error("Invalid token");
-      return res.status(404).json({ errors: [error.message] });
+      return res.status(404).json({ error: error.message });
     }
 
     user.password = await hashPassword(password);
@@ -147,7 +143,7 @@ export class AuthController {
 
     if (!isPasswordCorrect) {
       const error = new Error("Actual password is incorrect");
-      return res.status(401).json({ errors: [error.message] });
+      return res.status(401).json({ error: error.message });
     }
 
     user.password = await hashPassword(password);
@@ -165,7 +161,7 @@ export class AuthController {
 
     if (!isPasswordCorrect) {
       const error = new Error("Actual password is incorrect");
-      return res.status(401).json({ errors: [error.message] });
+      return res.status(401).json({ error: error.message });
     }
 
     res.json("Correct password");

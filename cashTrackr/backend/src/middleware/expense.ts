@@ -40,7 +40,7 @@ export const validateExpenseId = async (
 ) => {
   const id = parseInt(expenseId);
   if (isNaN(id) || id <= 0) {
-    return res.status(400).json({ errors: ["Invalid expense ID"] });
+    return res.status(400).json({ error: "Invalid expense ID" });
   }
   next();
 };
@@ -55,12 +55,12 @@ export const validateExpenseExists = async (
     const expense = await Expense.findByPk(+expenseId);
 
     if (!expense) {
-      return res.status(404).json({ errors: ["Gasto no encontrado"] });
+      return res.status(404).json({ error: "Gasto no encontrado" });
     }
     req.expense = expense;
 
     next();
   } catch (error) {
-    res.status(500).json({ errors: ["Hubo un error"] });
+    res.status(500).json({ error: "Hubo un error" });
   }
 };

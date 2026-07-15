@@ -34,7 +34,7 @@ describe('AuthController.createAccount', () => {
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(409)
-        expect(data).toEqual({ errors: ['Un usuario con ese email ya esta registrado'] })
+        expect(data).toHaveProperty('error', 'Un usuario con ese email ya esta registrado')
         expect(User.findOne).toHaveBeenCalled()
         expect(User.findOne).toHaveBeenCalledTimes(1)
     })
@@ -92,7 +92,7 @@ describe('AuthController.login', () => {
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(404)
-        expect(data).toEqual({errors: ['Usuario no encontrado']})
+        expect(data).toEqual({error: 'Usuario no encontrado'})
     })
 
     it('should return 403 if the account has not been confirmed', async () => {
@@ -117,7 +117,7 @@ describe('AuthController.login', () => {
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(403)
-        expect(data).toEqual({errors: ['La Cuenta no ha sido confirmada']})
+        expect(data).toEqual({error: 'La Cuenta no ha sido confirmada'})
     })
 
     it('should return 401 if the password is incorrect', async () => {
@@ -145,7 +145,7 @@ describe('AuthController.login', () => {
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(401)
-        expect(data).toEqual({errors: ['Password Incorrecto']})
+        expect(data).toEqual({error: 'Password Incorrecto'})
         expect(checkPassword).toHaveBeenCalledWith(req.body.password, userMock.password)
         expect(checkPassword).toHaveBeenCalledTimes(1)
     })

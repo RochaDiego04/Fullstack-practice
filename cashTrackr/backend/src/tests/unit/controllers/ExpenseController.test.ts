@@ -52,7 +52,7 @@ describe("ExpensesController.create", () => {
 
     const data = res._getJSONData();
     expect(res.statusCode).toBe(500);
-    expect(data).toEqual({ errors: ["Hubo un error"] });
+    expect(data).toEqual({ error: "Hubo un error" });
     expect(expenseMock.save).not.toHaveBeenCalled();
     expect(Expense.create).toHaveBeenCalledWith(req.body);
   });

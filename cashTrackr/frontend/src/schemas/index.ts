@@ -26,6 +26,12 @@ export const SuccessSchema = z.object({
   message: z.string({ message: "Invalid incoming string message" }),
 });
 
-export const ErrorSchema = z.object({
-  errors: z.array(z.string()),
-});
+// The API returns { error } for business failures and { errors } only from
+// handleInputErrors, which reports N field failures at once. Accept both and
+// normalize to a list so callers never branch.
+export const ErrorSchema = z
+  .union([
+    z.object({ error: z.string() }),
+    z.object({ errors: z.array(z.string()) }),
+  ])
+  .transform((data) => ("error" in data ? [data.error] : data.errors));

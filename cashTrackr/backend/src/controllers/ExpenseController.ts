@@ -10,7 +10,7 @@ export class ExpensesController {
       await expense.save();
       res.status(201).json("Gasto Agregado Correctamente");
     } catch (error) {
-      res.status(500).json({ errors: ["Hubo un error"] });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 

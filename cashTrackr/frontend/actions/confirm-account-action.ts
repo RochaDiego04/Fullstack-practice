@@ -47,7 +47,7 @@ export async function confirmAccount(
   const json = await req.json();
 
   if (!req.ok) {
-    const { errors } = ErrorSchema.parse(json);
+    const errors = ErrorSchema.parse(json);
     return { errors, success: "" };
   }
 

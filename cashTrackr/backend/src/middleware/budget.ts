@@ -18,7 +18,7 @@ export const validateBudgetId = async (
 ) => {
   const id = parseInt(budgetId);
   if (isNaN(id) || id <= 0) {
-    return res.status(400).json({ errors: ["Invalid budget ID"] });
+    return res.status(400).json({ error: "Invalid budget ID" });
   }
   next();
 };
@@ -33,15 +33,13 @@ export const validateBudgetExists = async (
     const budget = await Budget.findByPk(+budgetId);
 
     if (!budget) {
-      return res
-        .status(404)
-        .json({ errors: ["Presupuesto no encontrado"] });
+      return res.status(404).json({ error: "Presupuesto no encontrado" });
     }
     req.budget = budget;
 
     next();
   } catch (error) {
-    res.status(500).json({ errors: ["Hubo un error"] });
+    res.status(500).json({ error: "Hubo un error" });
   }
 };
 
@@ -72,7 +70,7 @@ export const hasAccess = async (
   next: NextFunction,
 ) => {
   if (req.budget.userId !== req.user.id) {
-    return res.status(401).json({ errors: ["Acción no válida"] });
+    return res.status(401).json({ error: "Acción no válida" });
   }
   next();
 };

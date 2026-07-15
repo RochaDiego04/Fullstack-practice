@@ -8,6 +8,8 @@ export const handleInputErrors = (
 ) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
+    // The only endpoint that reports several failures at once, so the only one
+    // that responds with a list. Everywhere else uses { error: string }.
     return res
       .status(400)
       .json({ errors: errors.array().map((error) => error.msg) });

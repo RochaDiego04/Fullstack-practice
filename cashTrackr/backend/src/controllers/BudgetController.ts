@@ -14,7 +14,7 @@ export class BudgetController {
 
       res.json(budgets);
     } catch (error) {
-      res.status(500).json({ errors: ["Hubo un error"] });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 
@@ -25,7 +25,7 @@ export class BudgetController {
       await budget.save();
       res.status(201).json("Presupuesto Creado Correctamente");
     } catch (error) {
-      res.status(500).json({ errors: ["Hubo un error"] });
+      res.status(500).json({ error: "Hubo un error" });
     }
   };
 

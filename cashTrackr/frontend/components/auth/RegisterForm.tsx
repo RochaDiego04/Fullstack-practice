@@ -2,8 +2,6 @@
 
 import { register } from "@/actions/create-account-action";
 import { useActionState, useEffect, useRef, startTransition } from "react";
-import ErrorMessage from "../ui/ErrorMessage";
-import SuccessMessage from "../ui/SuccessMessage";
 import { toast } from "react-toastify";
 
 export default function RegisterForm() {

@@ -19,14 +19,14 @@ export const authenticate = async (
 
   if (!bearer) {
     const error = new Error("Unauthorized");
-    return res.status(401).json({ errors: [error.message] });
+    return res.status(401).json({ error: error.message });
   }
 
   const [_, token] = bearer.split(" "); // remove bearer text
 
   if (!token) {
     const error = new Error("Invalid Token");
-    return res.status(401).json({ errors: [error.message] });
+    return res.status(401).json({ error: error.message });
   }
 
   try {
@@ -38,13 +38,13 @@ export const authenticate = async (
 
       if (!user) {
         const error = new Error("The user no longer exists");
-        res.status(404).json({ errors: [error.message] });
+        res.status(404).json({ error: error.message });
         return;
       }
       req.user = user;
       next();
     }
   } catch (error) {
-    res.status(500).json({ errors: ["Invalid Token"] });
+    res.status(500).json({ error: "Invalid Token" });
   }
 };
