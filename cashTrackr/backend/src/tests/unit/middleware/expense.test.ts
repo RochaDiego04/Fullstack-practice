@@ -28,7 +28,7 @@ describe('Expenses Middleware - validateExpenseExists', () => {
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(404)
-        expect(data).toEqual({error: 'Gasto no encontrado'})
+        expect(data).toEqual({errors: ['Gasto no encontrado']})
         expect(next).not.toHaveBeenCalled()
     })
 
@@ -61,7 +61,7 @@ describe('Expenses Middleware - validateExpenseExists', () => {
         const data = res._getJSONData()
         expect(next).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(500)
-        expect(data).toEqual({error: 'Hubo un error'})
+        expect(data).toEqual({errors: ['Hubo un error']})
     })
     
     it('should prevent unauthorized users from adding expenses', async () => {
@@ -79,7 +79,7 @@ describe('Expenses Middleware - validateExpenseExists', () => {
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(401)
-        expect(data).toEqual({error: 'Acción no válida'})
+        expect(data).toEqual({errors: ['Acción no válida']})
         expect(next).not.toHaveBeenCalled()
 
     })

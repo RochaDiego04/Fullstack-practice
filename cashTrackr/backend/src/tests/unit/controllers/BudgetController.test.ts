@@ -79,7 +79,7 @@ describe("BudgetController.getAll", () => {
     await BudgetController.getAll(req, res);
 
     expect(res.statusCode).toBe(500);
-    expect(res._getJSONData()).toEqual({ error: "Hubo un error" });
+    expect(res._getJSONData()).toEqual({ errors: ["Hubo un error"] });
   });
 });
 
@@ -126,7 +126,7 @@ describe("BudgetController.create", () => {
     const data = res._getJSONData();
 
     expect(res.statusCode).toBe(500);
-    expect(data).toEqual({ error: "Hubo un error" });
+    expect(data).toEqual({ errors: ["Hubo un error"] });
     expect(budgetMock.save).not.toHaveBeenCalled();
     expect(Budget.create).toHaveBeenCalledWith(req.body);
   });

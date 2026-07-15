@@ -4,6 +4,7 @@ import { register } from "@/actions/create-account-action";
 import { useActionState, useEffect, useRef, startTransition } from "react";
 import ErrorMessage from "../ui/ErrorMessage";
 import SuccessMessage from "../ui/SuccessMessage";
+import { toast } from "react-toastify";
 
 export default function RegisterForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -18,6 +19,17 @@ export default function RegisterForm() {
     }
   }, [state.success]);
 
+  useEffect(() => {
+    if (state.errors) {
+      state.errors.forEach((e) => {
+        toast.error(e);
+      });
+    }
+    if (state.success) {
+      toast.success(state.success);
+    }
+  }, [state]);
+
   return (
     <form
       ref={formRef}
@@ -29,10 +41,6 @@ export default function RegisterForm() {
         startTransition(() => dispatch(formData));
       }}
     >
-      {state.errors.map((error) => (
-        <ErrorMessage key={error}>{error}</ErrorMessage>
-      ))}
-      {state.success && <SuccessMessage>{state.success}</SuccessMessage>}
       <div className="flex flex-col gap-2">
         <label className="font-bold text-2xl" htmlFor="email">
           Email

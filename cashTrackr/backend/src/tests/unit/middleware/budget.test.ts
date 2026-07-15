@@ -22,7 +22,7 @@ describe('Budget Middleware - validateBudgetExists', () => {
         await validateBudgetExists(req, res, next)
         const data = res._getJSONData()
         expect(res.statusCode).toBe(404)
-        expect(data).toEqual({error: 'Presupuesto no encontrado'})
+        expect(data).toEqual({errors: ['Presupuesto no encontrado']})
         expect(next).not.toHaveBeenCalled()
     })
 
@@ -40,7 +40,7 @@ describe('Budget Middleware - validateBudgetExists', () => {
         await validateBudgetExists(req, res, next)
         const data = res._getJSONData()
         expect(res.statusCode).toBe(500)
-        expect(data).toEqual({error: 'Hubo un error'})
+        expect(data).toEqual({errors: ['Hubo un error']})
         expect(next).not.toHaveBeenCalled()
     })
 
@@ -87,6 +87,6 @@ describe('Budget Middleware - hasAccess', () => {
         hasAccess(req, res, next)
         expect(next).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(401)
-        expect(res._getJSONData()).toEqual({error: 'Acción no válida'})
+        expect(res._getJSONData()).toEqual({errors: ['Acción no válida']})
     })
 })
