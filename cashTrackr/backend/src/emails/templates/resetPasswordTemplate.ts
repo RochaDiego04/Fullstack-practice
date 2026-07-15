@@ -37,7 +37,7 @@ export const resetPasswordTemplate = (name: string, token: string) => `
                 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
                   <tr>
                     <td align="center">
-                      <a href="#"
+                      <a href="${process.env.FRONTEND_URL}/auth/new-password"
                          style="display:inline-block;background-color:#22c55e;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;border-radius:8px;padding:14px 32px;">
                         Restablecer Password
                       </a>

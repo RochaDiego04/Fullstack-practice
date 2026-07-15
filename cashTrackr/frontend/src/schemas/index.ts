@@ -16,6 +16,12 @@ export const RegisterSchema = z
     path: ["password_confirmation"],
   });
 
+export const ConfirmTokenSchema = z.object({
+  token: z
+    .string()
+    .regex(/^\d{6}$/, { message: "Token must be 6 digits" }),
+});
+
 export const SuccessSchema = z.object({
   message: z.string({ message: "Invalid incoming string message" }),
 });

@@ -42,15 +42,14 @@ export class AuthController {
 
     const user = await User.findOne({ where: { token: token } });
     if (!user) {
-      const error = new Error("Invalid token");
-      return res.status(401).json({ error: error.message });
+      return res.status(401).json({ errors: ["Invalid token"] });
     }
 
     user.confirmed = true;
     user.token = null;
     await user.save();
 
-    res.json("Account confirmed successfully");
+    res.json({ message: "Account confirmed successfully" });
   };
 
   static login = async (req: Request, res: Response) => {
