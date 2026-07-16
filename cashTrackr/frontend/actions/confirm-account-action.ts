@@ -1,11 +1,7 @@
 "use server";
 
 import { ConfirmTokenSchema, ErrorSchema, SuccessSchema } from "@/src/schemas";
-
-type ActionStateType = {
-  errors: string[];
-  success: string;
-};
+import { ActionStateType } from "@/src/types/ActionStateStype";
 
 export async function confirmAccount(
   _prevState: ActionStateType,

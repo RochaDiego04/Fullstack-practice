@@ -17,9 +17,7 @@ export const RegisterSchema = z
   });
 
 export const ConfirmTokenSchema = z.object({
-  token: z
-    .string()
-    .regex(/^\d{6}$/, { message: "Token must be 6 digits" }),
+  token: z.string().regex(/^\d{6}$/, { message: "Token must be 6 digits" }),
 });
 
 export const SuccessSchema = z.object({
@@ -35,3 +33,10 @@ export const ErrorSchema = z
     z.object({ errors: z.array(z.string()) }),
   ])
   .transform((data) => ("error" in data ? [data.error] : data.errors));
+
+export const LoginSchema = z.object({
+  email: z.email({
+    message: "Invalid email address",
+  }),
+  password: z.string().min(1, { message: "Password cannot be empty" }),
+});

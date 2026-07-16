@@ -2,10 +2,9 @@
 
 import { confirmAccount } from "@/actions/confirm-account-action";
 import { useActionState, useEffect, startTransition } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
 
 export default function ConfirmAccountForm() {
   const router = useRouter();
