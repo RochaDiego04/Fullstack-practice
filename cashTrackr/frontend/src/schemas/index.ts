@@ -24,6 +24,12 @@ export const SuccessSchema = z.object({
   message: z.string({ message: "Invalid incoming string message" }),
 });
 
+export const ForgotPasswordSchema = z.object({
+  email: z.email({
+    message: "Invalid email address",
+  }),
+});
+
 // The API returns { error } for business failures and { errors } only from
 // handleInputErrors, which reports N field failures at once. Accept both and
 // normalize to a list so callers never branch.

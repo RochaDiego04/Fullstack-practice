@@ -1,8 +1,33 @@
 "use client";
 
+import { forgotPassword } from "@/actions/forgot-password-action";
+import router from "next/router";
+import { useActionState, useEffect } from "react";
+import { toast } from "react-toastify";
+
 export default function ForgotPasswordForm() {
+  const [state, dispatch] = useActionState(forgotPassword, {
+    errors: [],
+    success: "",
+  });
+
+  useEffect(() => {
+    if (state.errors) {
+      state.errors.forEach((e) => {
+        toast.error(e);
+      });
+    }
+    if (state.success) {
+      toast.success(state.success, {
+        onClose: () => {
+          router.push("/auth/login");
+        },
+      });
+    }
+  }, [state]);
+
   return (
-    <form className=" mt-14 space-y-5" noValidate>
+    <form className=" mt-14 space-y-5" noValidate action={dispatch}>
       <div className="flex flex-col gap-2 mb-10">
         <label className="font-bold text-2xl">Email</label>
 

@@ -92,7 +92,7 @@ export class AuthController {
         token: user.token,
       });
 
-      res.json("Check your email for more instructions");
+      res.json({ message: "Check your email for more instructions" });
     } catch (error) {
       res.status(500).json({ error: "Error sending password reset email" });
     }
