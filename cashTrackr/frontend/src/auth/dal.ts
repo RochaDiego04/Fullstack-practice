@@ -5,11 +5,11 @@ import { redirect } from "next/navigation";
 import { UserSchema } from "../schemas";
 import { cache } from "react";
 
-export const verifyUserSession = cache(async () => {
+export const getSession = cache(async () => {
   const token = (await cookies()).get("CASHTRACKR_TOKEN")?.value;
 
   if (!token) {
-    redirect("/auth/login");
+    return { user: null, isAuth: false as const };
   }
 
   const url = `${process.env.API_URL}/auth/user`;
@@ -22,11 +22,21 @@ export const verifyUserSession = cache(async () => {
   const result = UserSchema.safeParse(session);
 
   if (!result.success) {
-    redirect("/auth/login");
+    return { user: null, isAuth: false as const };
   }
 
   return {
     user: result.data,
-    isAuth: true,
+    isAuth: true as const,
   };
+});
+
+export const verifyUserSession = cache(async () => {
+  const session = await getSession();
+
+  if (!session.isAuth) {
+    redirect("/auth/login");
+  }
+
+  return session;
 });
