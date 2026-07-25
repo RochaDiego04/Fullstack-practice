@@ -1,11 +1,12 @@
 "use client";
 
 import { forgotPassword } from "@/actions/forgot-password-action";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 export default function ForgotPasswordForm() {
+  const router = useRouter();
   const [state, dispatch] = useActionState(forgotPassword, {
     errors: [],
     success: "",
@@ -24,7 +25,7 @@ export default function ForgotPasswordForm() {
         },
       });
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <form className=" mt-14 space-y-5" noValidate action={dispatch}>

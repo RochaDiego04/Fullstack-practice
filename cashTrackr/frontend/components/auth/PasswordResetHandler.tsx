@@ -5,9 +5,15 @@ import ValidateTokenForm from "./ValidateTokenForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 
 export default function PasswordResetHandler() {
-  const [isValidToken, setIsValidToken] = useState(false);
+  const [validatedToken, setValidatedToken] = useState("");
 
   return (
-    <div>{isValidToken ? <ValidateTokenForm /> : <ResetPasswordForm />}</div>
+    <div>
+      {validatedToken ? (
+        <ResetPasswordForm token={validatedToken} />
+      ) : (
+        <ValidateTokenForm onValidToken={setValidatedToken} />
+      )}
+    </div>
   );
 }

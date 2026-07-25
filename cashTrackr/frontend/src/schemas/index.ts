@@ -30,6 +30,18 @@ export const ForgotPasswordSchema = z.object({
   }),
 });
 
+export const NewPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    password_confirmation: z.string(),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords do not match",
+    path: ["password_confirmation"],
+  });
+
 // The API returns { error } for business failures and { errors } only from
 // handleInputErrors, which reports N field failures at once. Accept both and
 // normalize to a list so callers never branch.

@@ -100,14 +100,13 @@ export class AuthController {
 
   static validateToken = async (req: Request, res: Response) => {
     const { token } = req.body;
-    res.json(token);
 
     const tokenExists = await User.findOne({ where: { token: token } });
     if (!tokenExists) {
       const error = new Error("Invalid token");
       return res.status(404).json({ error: error.message });
     }
-    res.json("");
+    res.json({ message: "Valid token, define your new password" });
   };
 
   static resetPasswordWithToken = async (req: Request, res: Response) => {
@@ -124,7 +123,7 @@ export class AuthController {
     user.token = null;
     await user.save();
 
-    res.json("Password modified");
+    res.json({ message: "Password modified successfully" });
   };
 
   static getUser = async (req: Request, res: Response) => {
