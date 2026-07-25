@@ -40,3 +40,11 @@ export const LoginSchema = z.object({
   }),
   password: z.string().min(1, { message: "Password cannot be empty" }),
 });
+
+export const UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.email(),
+});
+
+export type User = z.infer<typeof UserSchema>;
