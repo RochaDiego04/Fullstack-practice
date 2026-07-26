@@ -42,6 +42,15 @@ export const NewPasswordSchema = z
     path: ["password_confirmation"],
   });
 
+export const DraftBudgetSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: "El Nombre del presupuesto es obligatorio" }),
+  amount: z.coerce
+    .number({ message: "Cantidad no válida" })
+    .min(1, { message: "Cantidad no válida" }),
+});
+
 // The API returns { error } for business failures and { errors } only from
 // handleInputErrors, which reports N field failures at once. Accept both and
 // normalize to a list so callers never branch.
