@@ -74,4 +74,16 @@ export const UserSchema = z.object({
   email: z.email(),
 });
 
+export const BudgetAPIResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  amount: z.string(),
+  userId: z.number(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const BudgetsAPIResponseSchema = z.array(BudgetAPIResponseSchema);
+
 export type User = z.infer<typeof UserSchema>;
+export type Budget = z.infer<typeof BudgetAPIResponseSchema>;

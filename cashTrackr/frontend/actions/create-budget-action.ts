@@ -1,8 +1,8 @@
 "use server";
 
+import getToken from "@/src/auth/token";
 import { DraftBudgetSchema, ErrorSchema, SuccessSchema } from "@/src/schemas";
 import { ActionStateType } from "@/src/types/ActionStateStype";
-import { cookies } from "next/headers";
 
 export async function createBudget(
   _prevState: ActionStateType,
@@ -20,7 +20,7 @@ export async function createBudget(
     };
   }
 
-  const token = (await cookies()).get("CASHTRACKR_TOKEN")?.value;
+  const token = await getToken();
   const url = `${process.env.API_URL}/budgets`;
 
   const { name, amount } = budget.data;

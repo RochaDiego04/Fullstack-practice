@@ -1,12 +1,12 @@
 import "server-only";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { UserSchema } from "../schemas";
 import { cache } from "react";
+import getToken from "./token";
 
 export const getSession = cache(async () => {
-  const token = (await cookies()).get("CASHTRACKR_TOKEN")?.value;
+  const token = await getToken();
 
   if (!token) {
     return { user: null, isAuth: false as const };
