@@ -21,7 +21,6 @@ router.use(authenticate);
 
 router.param("budgetId", validateBudgetId);
 router.param("expenseId", validateExpenseId);
-router.param("budgetId", hasAccess);
 
 router.get("/", BudgetController.getAll);
 
@@ -36,6 +35,7 @@ router.get(
   "/:budgetId",
   handleInputErrors,
   validateBudgetExists,
+  hasAccess,
   BudgetController.getById,
 );
 
@@ -44,6 +44,7 @@ router.patch(
   validateBudgetInput,
   handleInputErrors,
   validateBudgetExists,
+  hasAccess,
   BudgetController.updateById,
 );
 
@@ -51,6 +52,7 @@ router.delete(
   "/:budgetId",
   handleInputErrors,
   validateBudgetExists,
+  hasAccess,
   BudgetController.deleteById,
 );
 
@@ -61,11 +63,13 @@ router.post(
   validateExpenseInput,
   handleInputErrors,
   validateBudgetExists,
+  hasAccess,
   ExpensesController.create,
 );
 router.get(
   "/:budgetId/expenses/:expenseId",
   validateBudgetExists,
+  hasAccess,
   validateExpenseExists,
   ExpensesController.getById,
 );
@@ -74,6 +78,7 @@ router.patch(
   validateExpenseInput,
   handleInputErrors,
   validateBudgetExists,
+  hasAccess,
   validateExpenseExists,
   ExpensesController.updateById,
 );
@@ -81,6 +86,7 @@ router.delete(
   "/:budgetId/expenses/:expenseId",
   handleInputErrors,
   validateBudgetExists,
+  hasAccess,
   validateExpenseExists,
   ExpensesController.deleteById,
 );

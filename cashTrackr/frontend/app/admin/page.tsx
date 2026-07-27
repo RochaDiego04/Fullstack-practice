@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { BudgetsAPIResponseSchema } from "@/src/schemas";
 import getToken from "@/src/auth/token";
-import { budgets } from "../../../backend/src/tests/mocks/budgets";
 import { formatCurrency, formatDate } from "../../src/utils/index";
 import BudgetMenu from "../../components/budgets/BudgetMenu";
 
@@ -32,7 +31,7 @@ async function getUserBudgets() {
 }
 
 export default async function AdminPage() {
-  await getUserBudgets();
+  const budgets = await getUserBudgets();
 
   return (
     <>
