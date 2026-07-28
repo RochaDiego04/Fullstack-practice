@@ -29,7 +29,7 @@ export default function CreateBudgetForm() {
         },
       });
     }
-  }, [state]);
+  }, [router, state]);
 
   return (
     <form className="mt-10 space-y-3" noValidate action={dispatch}>

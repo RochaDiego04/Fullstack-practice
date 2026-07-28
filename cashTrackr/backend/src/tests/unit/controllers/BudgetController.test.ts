@@ -204,7 +204,7 @@ describe("BudgetController.updateById", () => {
 
     const data = res._getJSONData();
     expect(res.statusCode).toBe(200);
-    expect(data).toBe("Presupuesto actualizado correctamente");
+    expect(data).toEqual({ message: "Presupuesto actualizado correctamente" });
     expect(budgetMock.update).toHaveBeenCalled();
     expect(budgetMock.update).toHaveBeenCalledTimes(1);
     expect(budgetMock.update).toHaveBeenCalledWith(req.body);
