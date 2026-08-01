@@ -30,6 +30,10 @@ export const ForgotPasswordSchema = z.object({
   }),
 });
 
+export const PasswordValidationSchema = z
+  .string()
+  .min(1, { message: "Invalid password" });
+
 export const NewPasswordSchema = z
   .object({
     password: z

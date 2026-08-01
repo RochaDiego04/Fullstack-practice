@@ -44,6 +44,6 @@ export class BudgetController {
 
   static deleteById = async (req: Request, res: Response) => {
     await req.budget.destroy();
-    res.json("Presupuesto eliminado");
+    res.json({ message: "Presupuesto eliminado" });
   };
 }

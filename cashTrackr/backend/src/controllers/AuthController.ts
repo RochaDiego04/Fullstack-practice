@@ -163,6 +163,6 @@ export class AuthController {
       return res.status(401).json({ error: error.message });
     }
 
-    res.json("Correct password");
+    res.json({ message: "Correct password" });
   };
 }

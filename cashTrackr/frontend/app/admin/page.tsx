@@ -4,6 +4,7 @@ import { BudgetsAPIResponseSchema } from "@/src/schemas";
 import getToken from "@/src/auth/token";
 import { formatCurrency, formatDate } from "../../src/utils/index";
 import BudgetMenu from "../../components/budgets/BudgetMenu";
+import DeleteBudgetModal from "../../components/budgets/DeleteBudgetModal";
 
 export const metadata: Metadata = {
   title: "CashTrackr - Administration Panel",
@@ -88,6 +89,8 @@ export default async function AdminPage() {
               </li>
             ))}
           </ul>
+
+          <DeleteBudgetModal budgets={budgets} />
         </>
       ) : (
         <p className="text-center py-20">

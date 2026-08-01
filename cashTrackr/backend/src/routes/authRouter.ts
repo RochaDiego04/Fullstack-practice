@@ -84,7 +84,7 @@ router.post(
 );
 
 router.post(
-  "/check-password/:token",
+  "/check-password",
   authenticate,
   body("password").notEmpty().withMessage("Password cannot be empty"),
   handleInputErrors,
