@@ -55,6 +55,13 @@ export const DraftBudgetSchema = z.object({
     .min(1, { message: "Cantidad no válida" }),
 });
 
+export const DraftExpenseSchema = z.object({
+  name: z.string().min(1, { message: "El Nombre del gasto es obligatorio" }),
+  amount: z.coerce
+    .number({ message: "Cantidad no válida" })
+    .min(1, { message: "Cantidad no válida" }),
+});
+
 // The API returns { error } for business failures and { errors } only from
 // handleInputErrors, which reports N field failures at once. Accept both and
 // normalize to a list so callers never branch.
@@ -78,6 +85,15 @@ export const UserSchema = z.object({
   email: z.email(),
 });
 
+export const ExpenseAPIResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  amount: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  budgetId: z.number(),
+});
+
 export const BudgetAPIResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -85,6 +101,7 @@ export const BudgetAPIResponseSchema = z.object({
   userId: z.number(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  expenses: z.array(ExpenseAPIResponseSchema),
 });
 
 export const BudgetsAPIResponseSchema = z.array(BudgetAPIResponseSchema);
