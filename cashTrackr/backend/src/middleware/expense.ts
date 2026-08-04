@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { body } from "express-validator";
 import Expense from "../models/Expense";
+import { error } from "node:console";
 
 declare global {
   namespace Express {
@@ -58,6 +59,23 @@ export const validateExpenseExists = async (
       return res.status(404).json({ error: "Gasto no encontrado" });
     }
     req.expense = expense;
+
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "Hubo un error" });
+  }
+};
+
+export const belongsToBudget = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (req.budget.id !== req.expense.budgetId) {
+      const error = new Error("Invalid action");
+      res.status(403).json({ error: error.message });
+    }
 
     next();
   } catch (error) {

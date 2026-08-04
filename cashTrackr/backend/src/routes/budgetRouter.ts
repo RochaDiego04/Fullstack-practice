@@ -14,6 +14,7 @@ import {
   validateExpenseInput,
 } from "../middleware/expenses";
 import { authenticate } from "../middleware/auth";
+import { belongsToBudget } from "../middleware/expense";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use(authenticate);
 
 router.param("budgetId", validateBudgetId);
 router.param("expenseId", validateExpenseId);
+router.param("expenseId", belongsToBudget);
 
 router.get("/", BudgetController.getAll);
 
