@@ -104,7 +104,12 @@ export const BudgetAPIResponseSchema = z.object({
   expenses: z.array(ExpenseAPIResponseSchema),
 });
 
-export const BudgetsAPIResponseSchema = z.array(BudgetAPIResponseSchema);
+export const BudgetsAPIResponseSchema = z.array(
+  BudgetAPIResponseSchema.omit({ expenses: true }),
+); // when we get all the budgets, we dont care about specific expenses on each
+// this only when we get an specific budget
 
 export type User = z.infer<typeof UserSchema>;
 export type Budget = z.infer<typeof BudgetAPIResponseSchema>;
+export type DraftExpense = z.infer<typeof DraftExpenseSchema>;
+export type Expense = z.infer<typeof ExpenseAPIResponseSchema>;

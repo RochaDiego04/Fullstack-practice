@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import AddExpenseButton from "../../../../components/expenses/AddExpenseButton";
 import ModalContainer from "../../../../components/ui/ModalContainer";
 import { formatCurrency, formatDate } from "../../../../src/utils/index";
+import ExpenseMenu from "../../../../components/expenses/ExpenseMenu";
 
 export async function generateMetadata({
   params,
@@ -62,6 +63,8 @@ export default async function BudgetDetailsPage({
                     </p>
                   </div>
                 </div>
+
+                <ExpenseMenu expenseId={expense.id} />
               </li>
             ))}
           </ul>
