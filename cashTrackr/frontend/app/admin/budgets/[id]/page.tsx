@@ -4,6 +4,8 @@ import AddExpenseButton from "../../../../components/expenses/AddExpenseButton";
 import ModalContainer from "../../../../components/ui/ModalContainer";
 import { formatCurrency, formatDate } from "../../../../src/utils/index";
 import ExpenseMenu from "../../../../components/expenses/ExpenseMenu";
+import Amount from "@/components/ui/Amount";
+import ProgressBar from "../../../../components/budgets/ProgressBar";
 
 export async function generateMetadata({
   params,
@@ -25,10 +27,29 @@ export default async function BudgetDetailsPage({
   const { id } = await params;
   const budget = await getBudgetById(id);
 
+  const totalSpent = budget.expenses.reduce(
+    (total, expense) => +expense.amount + total,
+    0,
+  );
+  const totalAvailable = +budget.amount - totalSpent;
+
+  const percentage = ((totalSpent / +budget.amount) * 100).toFixed(2);
+
   return (
     <>
       <div className="flex justify-between items-center">
         <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 mt-10">
+            <div>
+              <ProgressBar percentage={+percentage} />
+            </div>
+            <div className="flex flex-col justify-center items-center md:items-start gap-5">
+              <Amount label={"Presupuesto"} amount={+budget.amount} />
+              <Amount label={"Disponible"} amount={totalAvailable} />
+              <Amount label={"Gastado"} amount={totalSpent} />
+            </div>
+          </div>
+
           <h1 className="font-black text-4xl text-purple-950">{budget.name}</h1>
           <p className="text-xl font-bold">
             Administra tus <span className="text-amber-500">gastos</span>

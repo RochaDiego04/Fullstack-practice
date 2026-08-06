@@ -22,7 +22,6 @@ router.use(authenticate);
 
 router.param("budgetId", validateBudgetId);
 router.param("expenseId", validateExpenseId);
-router.param("expenseId", belongsToBudget);
 
 router.get("/", BudgetController.getAll);
 
@@ -73,6 +72,7 @@ router.get(
   validateBudgetExists,
   hasAccess,
   validateExpenseExists,
+  belongsToBudget,
   ExpensesController.getById,
 );
 router.patch(
@@ -82,6 +82,7 @@ router.patch(
   validateBudgetExists,
   hasAccess,
   validateExpenseExists,
+  belongsToBudget,
   ExpensesController.updateById,
 );
 router.delete(
@@ -90,6 +91,7 @@ router.delete(
   validateBudgetExists,
   hasAccess,
   validateExpenseExists,
+  belongsToBudget,
   ExpensesController.deleteById,
 );
 

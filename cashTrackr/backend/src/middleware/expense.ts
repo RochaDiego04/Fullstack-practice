@@ -74,7 +74,7 @@ export const belongsToBudget = async (
   try {
     if (req.budget.id !== req.expense.budgetId) {
       const error = new Error("Invalid action");
-      res.status(403).json({ error: error.message });
+      return res.status(403).json({ error: error.message });
     }
 
     next();
