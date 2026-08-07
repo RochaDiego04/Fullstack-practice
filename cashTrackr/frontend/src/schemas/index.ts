@@ -77,6 +77,14 @@ export const DraftExpenseSchema = z.object({
     .min(1, { message: "Cantidad no válida" }),
 });
 
+export const ProfileFormSchema = z.object({
+  name: z.string().min(1, { message: "Tu Nombre no puede ir vacio" }),
+  email: z
+    .string()
+    .min(1, { message: "El Email es Obligatorio" })
+    .email({ message: "Email no válido" }),
+});
+
 // The API returns { error } for business failures and { errors } only from
 // handleInputErrors, which reports N field failures at once. Accept both and
 // normalize to a list so callers never branch.

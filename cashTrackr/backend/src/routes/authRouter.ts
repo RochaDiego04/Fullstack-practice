@@ -91,4 +91,13 @@ router.post(
   AuthController.checkPassword,
 );
 
+router.patch(
+  "/update-profile",
+  authenticate,
+  body("name").notEmpty().withMessage("Name cannot be empty"),
+  body("email").isEmail().withMessage("Invalid e-mail"),
+  handleInputErrors,
+  AuthController.updateUserProfile,
+);
+
 export default router;

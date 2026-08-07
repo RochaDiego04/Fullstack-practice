@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { Op } from "sequelize";
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/auth";
 import { generateToken } from "../utils/token";
@@ -164,5 +165,26 @@ export class AuthController {
     }
 
     res.json({ message: "Correct password" });
+  };
+
+  static updateUserProfile = async (req: Request, res: Response) => {
+    const { name, email } = req.body;
+    const { id } = req.user;
+
+    try {
+      const userExists = await User.findOne({
+        where: { email, id: { [Op.ne]: id } },
+      });
+
+      if (userExists) {
+        const error = new Error("User with that email already exists");
+        return res.status(409).json({ error: error.message });
+      }
+
+      await User.update({ name, email }, { where: { id } });
+      res.status(201).json({ message: "Profile updated successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Error while updating profile" });
+    }
   };
 }
