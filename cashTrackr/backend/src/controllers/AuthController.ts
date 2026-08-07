@@ -148,7 +148,7 @@ export class AuthController {
     user.password = await hashPassword(password);
     await user.save();
 
-    res.json("Password updated successfully");
+    res.json({ message: "Password updated successfully" });
   };
 
   static checkPassword = async (req: Request, res: Response) => {

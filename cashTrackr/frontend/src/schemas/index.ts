@@ -46,6 +46,21 @@ export const NewPasswordSchema = z
     path: ["password_confirmation"],
   });
 
+export const UpdatePasswordSchema = z
+  .object({
+    current_password: z
+      .string()
+      .min(1, { message: "Password cannot be emptyu" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    password_confirmation: z.string(),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords do not match",
+    path: ["password_confirmation"],
+  });
+
 export const DraftBudgetSchema = z.object({
   name: z
     .string()
